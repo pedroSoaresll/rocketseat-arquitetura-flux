@@ -10,7 +10,7 @@ import { formatPrice } from '../../utils/format';
 
 import { Container, ProductTable, Total } from './styles';
 
-function Cart({ cart }) {
+function Cart({ dispatch, cart }) {
   const calcSubTotal = product => {
     return formatPrice(product.price * (product.quantity || 1));
   };
@@ -49,10 +49,27 @@ function Cart({ cart }) {
               <td>
                 <div>
                   <button type="button">
-                    <MdRemoveCircleOutline size={20} color="#7159c1" />
+                    <MdRemoveCircleOutline
+                      size={20}
+                      color="#7159c1"
+                      onClick={() =>
+                        dispatch({
+                          type: 'REMOVE_QUANTITY',
+                          product,
+                        })
+                      }
+                    />
                   </button>
                   <input type="number" readOnly value={product.amount} />
-                  <button type="button">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      dispatch({
+                        type: 'ADD_QUANTITY',
+                        product,
+                      })
+                    }
+                  >
                     <MdAddCircleOutline size={20} color="#7159c1" />
                   </button>
                 </div>
@@ -62,7 +79,16 @@ function Cart({ cart }) {
               </td>
               <td>
                 <button type="button">
-                  <MdDelete size={20} color="#7159c1" />
+                  <MdDelete
+                    size={20}
+                    color="#7159c1"
+                    onClick={() =>
+                      dispatch({
+                        type: 'REMOVE_FROM_CART',
+                        product,
+                      })
+                    }
+                  />
                 </button>
               </td>
             </tr>
