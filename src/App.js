@@ -1,7 +1,15 @@
 import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import GlobalStyle from './styles/global';
+import Routes from './routes';
+import Header from './components/Header';
 
-// import { Container } from './styles';
-
-const App = () => <h1>Ola mundo stateless</h1>;
+const App = () => (
+  <BrowserRouter>
+    <Header />
+    <Routes />
+    <GlobalStyle />
+  </BrowserRouter>
+);
 
 export default App;
