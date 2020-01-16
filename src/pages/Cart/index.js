@@ -11,14 +11,10 @@ import { formatPrice } from '../../utils/format';
 import { Container, ProductTable, Total } from './styles';
 
 function Cart({ dispatch, cart }) {
-  const calcSubTotal = product => {
-    return formatPrice(product.price * (product.quantity || 1));
-  };
-
   const calcTotalPrice = () =>
     formatPrice(
       cart.reduce(
-        (accumulator, currentValue) => accumulator + currentValue.price,
+        (accumulator, currentValue) => accumulator + currentValue.subtotal,
         0
       )
     );
@@ -75,7 +71,7 @@ function Cart({ dispatch, cart }) {
                 </div>
               </td>
               <td>
-                <strong>{calcSubTotal(product)}</strong>
+                <strong>{product.subtotalFormatted}</strong>
               </td>
               <td>
                 <button type="button">
@@ -110,6 +106,7 @@ function Cart({ dispatch, cart }) {
 
 Cart.propTypes = {
   cart: PropTypes.arrayOf(PropTypes.object).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

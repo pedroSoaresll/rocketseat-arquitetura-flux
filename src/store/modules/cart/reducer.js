@@ -1,4 +1,5 @@
 import produce from 'immer';
+import { formatPrice } from '../../../utils/format';
 
 function hasProductInCart(draftProducts, product) {
   const productIndex = draftProducts.findIndex(p => p.id === product.id);
@@ -7,6 +8,17 @@ function hasProductInCart(draftProducts, product) {
     index: productIndex,
     have: productIndex >= 0,
   };
+}
+
+function calcSubtotal(product) {
+  return product.amount * product.price;
+}
+
+function updateSubtotal(product) {
+  product.subtotal = calcSubtotal(product);
+  product.subtotalFormatted = formatPrice(product.subtotal);
+
+  return product;
 }
 
 export default function cart(state = [], action) {
@@ -18,10 +30,15 @@ export default function cart(state = [], action) {
         if (productInCart.have) {
           draft[productInCart.index].amount += 1;
         } else {
-          draft.push({
+          const newProduct = {
             ...action.product,
             amount: 1,
-          });
+          };
+
+          newProduct.subtotal = calcSubtotal(newProduct);
+          newProduct.subtotalFormatted = formatPrice(newProduct.subtotal);
+
+          draft.push(newProduct);
         }
       });
 
@@ -30,10 +47,13 @@ export default function cart(state = [], action) {
         const productInCart = hasProductInCart(draft, action.product);
 
         if (productInCart.have) {
-          const product = draft[productInCart.index];
+          let product = draft[productInCart.index];
 
           product.amount += 1;
+          product = updateSubtotal(product);
         }
+
+        return draft;
       });
 
     case 'REMOVE_FROM_CART':
@@ -58,7 +78,8 @@ export default function cart(state = [], action) {
             draft.map(p => {
               if (p.id === product.id) {
                 p.amount -= 1;
-                return p;
+
+                return updateSubtotal(p);
               }
 
               return p;
