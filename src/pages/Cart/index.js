@@ -1,5 +1,7 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import {
   MdRemoveCircleOutline,
   MdAddCircleOutline,
@@ -7,10 +9,11 @@ import {
 } from 'react-icons/md';
 import PropTypes from 'prop-types';
 import { formatPrice } from '../../utils/format';
+import * as CartActions from '../../store/modules/cart/actions';
 
 import { Container, ProductTable, Total } from './styles';
 
-function Cart({ dispatch, cart }) {
+function Cart({ cart, removeQuantity, removeFromCart, addQuantity }) {
   const calcTotalPrice = () =>
     formatPrice(
       cart.reduce(
@@ -48,24 +51,11 @@ function Cart({ dispatch, cart }) {
                     <MdRemoveCircleOutline
                       size={20}
                       color="#7159c1"
-                      onClick={() =>
-                        dispatch({
-                          type: 'REMOVE_QUANTITY',
-                          product,
-                        })
-                      }
+                      onClick={() => removeQuantity(product)}
                     />
                   </button>
                   <input type="number" readOnly value={product.amount} />
-                  <button
-                    type="button"
-                    onClick={() =>
-                      dispatch({
-                        type: 'ADD_QUANTITY',
-                        product,
-                      })
-                    }
-                  >
+                  <button type="button" onClick={() => addQuantity(product)}>
                     <MdAddCircleOutline size={20} color="#7159c1" />
                   </button>
                 </div>
@@ -78,12 +68,7 @@ function Cart({ dispatch, cart }) {
                   <MdDelete
                     size={20}
                     color="#7159c1"
-                    onClick={() =>
-                      dispatch({
-                        type: 'REMOVE_FROM_CART',
-                        product,
-                      })
-                    }
+                    onClick={() => removeFromCart(product)}
                   />
                 </button>
               </td>
@@ -106,11 +91,16 @@ function Cart({ dispatch, cart }) {
 
 Cart.propTypes = {
   cart: PropTypes.arrayOf(PropTypes.object).isRequired,
-  dispatch: PropTypes.func.isRequired,
+  removeQuantity: PropTypes.func.isRequired,
+  removeFromCart: PropTypes.func.isRequired,
+  addQuantity: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   cart: state.cart,
 });
 
-export default connect(mapStateToProps)(Cart);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(CartActions, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Cart);
