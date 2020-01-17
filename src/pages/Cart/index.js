@@ -1,26 +1,30 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   MdRemoveCircleOutline,
   MdAddCircleOutline,
   MdDelete,
 } from 'react-icons/md';
-import PropTypes from 'prop-types';
 import { formatPrice } from '../../utils/format';
 import * as CartActions from '../../store/modules/cart/actions';
 
 import { Container, ProductTable, Total } from './styles';
 
-function Cart({ cart, removeQuantity, removeFromCart, addQuantityRequest }) {
-  const calcTotalPrice = () =>
-    formatPrice(
-      cart.reduce(
-        (accumulator, currentValue) => accumulator + currentValue.subtotal,
-        0
-      )
-    );
+export default function Cart() {
+  const cart = useSelector(state => state.cart);
+  const dispatch = useDispatch();
+
+  const calcTotalPrice = useCallback(
+    () =>
+      formatPrice(
+        cart.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.subtotal,
+          0
+        )
+      ),
+    [cart]
+  );
 
   return (
     <Container>
@@ -51,13 +55,17 @@ function Cart({ cart, removeQuantity, removeFromCart, addQuantityRequest }) {
                     <MdRemoveCircleOutline
                       size={20}
                       color="#7159c1"
-                      onClick={() => removeQuantity(product)}
+                      onClick={() =>
+                        dispatch(CartActions.removeQuantity(product))
+                      }
                     />
                   </button>
                   <input type="number" readOnly value={product.amount} />
                   <button
                     type="button"
-                    onClick={() => addQuantityRequest(product)}
+                    onClick={() =>
+                      dispatch(CartActions.addQuantityRequest(product))
+                    }
                   >
                     <MdAddCircleOutline size={20} color="#7159c1" />
                   </button>
@@ -71,7 +79,9 @@ function Cart({ cart, removeQuantity, removeFromCart, addQuantityRequest }) {
                   <MdDelete
                     size={20}
                     color="#7159c1"
-                    onClick={() => removeFromCart(product)}
+                    onClick={() =>
+                      dispatch(CartActions.removeFromCart(product))
+                    }
                   />
                 </button>
               </td>
@@ -91,19 +101,3 @@ function Cart({ cart, removeQuantity, removeFromCart, addQuantityRequest }) {
     </Container>
   );
 }
-
-Cart.propTypes = {
-  cart: PropTypes.arrayOf(PropTypes.object).isRequired,
-  removeQuantity: PropTypes.func.isRequired,
-  removeFromCart: PropTypes.func.isRequired,
-  addQuantityRequest: PropTypes.func.isRequired,
-};
-
-const mapStateToProps = state => ({
-  cart: state.cart,
-});
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(CartActions, dispatch);
-
-export default connect(mapStateToProps, mapDispatchToProps)(Cart);
