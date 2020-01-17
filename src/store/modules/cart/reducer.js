@@ -29,7 +29,7 @@ export default function cart(state = [], action) {
         draft.push(product);
       });
 
-    case '@cart/ADD_QUANTITY':
+    case '@cart/ADD_QUANTITY_SUCCESS':
       return produce(state, draft => {
         const productInCart = hasProductInCart(draft, action.product);
 
@@ -57,19 +57,17 @@ export default function cart(state = [], action) {
         if (productInCart.have) {
           const product = draft[productInCart.index];
 
-          if (product.amount <= 1) {
-            draft.splice(productInCart.index, 1);
-          } else {
-            draft.map(p => {
-              if (p.id === product.id) {
-                p.amount -= 1;
+          if (product.amount <= 1) return;
 
-                return updateSubtotal(p);
-              }
+          draft.map(p => {
+            if (p.id === product.id) {
+              p.amount -= 1;
 
-              return p;
-            });
-          }
+              return updateSubtotal(p);
+            }
+
+            return p;
+          });
         }
       });
 

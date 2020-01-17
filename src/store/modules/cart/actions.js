@@ -12,9 +12,16 @@ export function addToCartSuccess(product) {
   };
 }
 
-export function addQuantity(product) {
+export function addQuantityRequest(product) {
   return {
-    type: '@cart/ADD_QUANTITY',
+    type: '@cart/ADD_QUANTITY_REQUEST',
+    product,
+  };
+}
+
+export function addQuantitySuccess(product) {
+  return {
+    type: '@cart/ADD_QUANTITY_SUCCESS',
     product,
   };
 }
