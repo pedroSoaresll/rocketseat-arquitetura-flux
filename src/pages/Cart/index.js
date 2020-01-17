@@ -13,7 +13,7 @@ import * as CartActions from '../../store/modules/cart/actions';
 
 import { Container, ProductTable, Total } from './styles';
 
-function Cart({ cart, removeQuantity, removeFromCart, addQuantity }) {
+function Cart({ cart, removeQuantity, removeFromCart, addQuantityRequest }) {
   const calcTotalPrice = () =>
     formatPrice(
       cart.reduce(
@@ -55,7 +55,10 @@ function Cart({ cart, removeQuantity, removeFromCart, addQuantity }) {
                     />
                   </button>
                   <input type="number" readOnly value={product.amount} />
-                  <button type="button" onClick={() => addQuantity(product)}>
+                  <button
+                    type="button"
+                    onClick={() => addQuantityRequest(product)}
+                  >
                     <MdAddCircleOutline size={20} color="#7159c1" />
                   </button>
                 </div>
@@ -93,7 +96,7 @@ Cart.propTypes = {
   cart: PropTypes.arrayOf(PropTypes.object).isRequired,
   removeQuantity: PropTypes.func.isRequired,
   removeFromCart: PropTypes.func.isRequired,
-  addQuantity: PropTypes.func.isRequired,
+  addQuantityRequest: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
