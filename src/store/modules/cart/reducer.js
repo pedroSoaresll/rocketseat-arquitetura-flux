@@ -23,26 +23,13 @@ function updateSubtotal(product) {
 
 export default function cart(state = [], action) {
   switch (action.type) {
-    case 'ADD_TO_CART':
+    case '@cart/ADD_SUCCESS':
       return produce(state, draft => {
-        const productInCart = hasProductInCart(draft, action.product);
-
-        if (productInCart.have) {
-          draft[productInCart.index].amount += 1;
-        } else {
-          const newProduct = {
-            ...action.product,
-            amount: 1,
-          };
-
-          newProduct.subtotal = calcSubtotal(newProduct);
-          newProduct.subtotalFormatted = formatPrice(newProduct.subtotal);
-
-          draft.push(newProduct);
-        }
+        const { product } = action;
+        draft.push(product);
       });
 
-    case 'ADD_QUANTITY':
+    case '@cart/ADD_QUANTITY':
       return produce(state, draft => {
         const productInCart = hasProductInCart(draft, action.product);
 
@@ -52,11 +39,9 @@ export default function cart(state = [], action) {
           product.amount += 1;
           product = updateSubtotal(product);
         }
-
-        return draft;
       });
 
-    case 'REMOVE_FROM_CART':
+    case '@cart/REMOVE':
       return produce(state, draft => {
         const productInCart = hasProductInCart(draft, action.product);
 
@@ -65,7 +50,7 @@ export default function cart(state = [], action) {
         }
       });
 
-    case 'REMOVE_QUANTITY':
+    case '@cart/REMOVE_QUANTITY':
       return produce(state, draft => {
         const productInCart = hasProductInCart(draft, action.product);
 
