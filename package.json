@@ -29,7 +29,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "e2e:cypress": "./node_modules/.bin/cypress open",
+    "e2e:cypress:on": "./node_modules/.bin/cypress run --record --key a208e407-ceb0-445f-8d62-15c7e04b1130"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -48,6 +50,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
+    "cypress": "^4.0.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.9.0",
